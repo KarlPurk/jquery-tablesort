@@ -27,7 +27,13 @@
 				table = this.$table,
 				rowsContainer = table.find('tbody').length > 0 ? table.find('tbody') : table,
 				rows = rowsContainer.find('tr').has('td, th'),
-				cells = rows.find(':nth-child(' + (th.index() + 1) + ')').filter('td, th'),
+				thIndexOffset = this.$table.find('thead').find('th').toArray().reduce(function(prev, cur, i) {
+					if (i > th.index()) {
+						return prev;
+					}
+					return prev + ($(cur).attr('colspan') - 1);
+				}, 1), // support th that spans multiple rows
+				cells = rows.find(':nth-child(' + (th.index() + thIndexOffset) + ')').filter('td, th'),
 				sortBy = th.data().sortBy,
 				sortedMap = [];
 
